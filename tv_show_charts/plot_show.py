@@ -64,7 +64,7 @@ class PlotShow(object):
             axes[i].set_title("Season {}".format(season.number), fontsize=12)
             # Configure the axis
             axes[i].set_ylim(5, 10)
-            axes[i].set_xlim(0, len(season.episodes)-1)
+            axes[i].set_xlim(0, len(season.episodes))
             axes[i].yaxis.grid(True)
             
             # Clone axis
