@@ -15,7 +15,7 @@ setup(
     author_email='ibt.org@gmail.com',
     license='MIT',
     packages=['tv_show_charts'],
-    install_requires = ['matplotlib'],
+    install_requires = ['matplotlib>=1.4.2'],
     zip_safe=False,
     entry_points = {
         'console_scripts': ['tv_show_charts=tv_show_charts.command_line:main'],
