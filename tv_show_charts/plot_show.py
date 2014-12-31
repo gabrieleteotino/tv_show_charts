@@ -6,6 +6,7 @@ Created on 29/dic/2014
 import itertools
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots_adjust
+import matplotlib as mpl
 import numpy
 
 class PlotShow(object):
@@ -21,6 +22,8 @@ class PlotShow(object):
         print "plot_show_multi - " + str(show)
 
         plt.style.use("ggplot")
+        # Set the plot background a bit lighter
+        mpl.rcParams['axes.facecolor'] = 'F0F0F0'
 
         # These are the "Tableau 20" colors as RGB
         tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),
@@ -40,10 +43,11 @@ class PlotShow(object):
         # Create the chart
         # squeeze=False enforce the returning of an array even if only one season is present
         fig, axes = plt.subplots(1, len(seasons), sharex=True, squeeze=False)
-        # We use only one row of axes, so we only the first dimension
+
+        # We use only one row of axes, so we only need the first row
         axes = axes[0]
         axes_twin = []
-        
+
         # Add a title
         fig.suptitle(title, fontsize=16)
 
@@ -64,14 +68,17 @@ class PlotShow(object):
             ratings_trend = calculate_trend_line_poly(x, ratings)
             votes = [ep.votes for ep in season.episodes]
             #votes_trend = calculate_trend_line_poly(x, votes)
-            
+
+            label = "Season {}".format(season.number)
+
             # Plot ratings
             axis = axes[i]
             color = tableau20[i%20]
-            axis.plot(x, ratings, "-8", color=color)
+            axis.plot(x, ratings, "-8", color=color, linewidth=2.0)
+
             # Plot the trend line
             axis.plot(x, ratings_trend(x), "-", color=color)
-            axis.set_title("Season {}".format(season.number), fontsize=12)
+            axis.set_title(label, fontsize=12, color=color)
             # Configure the axis
             axis.set_ylim(5, 10)
             axis.yaxis.grid(True)
@@ -86,21 +93,21 @@ class PlotShow(object):
             # Plot the trend line
             #axis_twin.plot(x, votes_trend(x), ":")
 
+            # Only after the last plot we can set the xbounds
+            axis.set_xbound(-1)
+
+        # Remove the Grid for the x axis
         for axis in axes:
             axis.get_xaxis().set_visible(False)
 
         # Clear the "Ratings" axis for all except the first one
         for axis in axes[1:]:
             axis.set_yticklabels([])
-            # remove vertical axis line
-            #axis.spines['right'].set_visible(False)
-            #axis.spines['left'].set_visible(False)
 
         # Clear the "Votes" axis for all except the last one
         for axis in axes_twin[:-1]:
             axis.get_yaxis().set_visible(False)
         axes_twin[-1].get_yaxis().grid(False)
-
 
         axes[0].set_ylabel('Ratings')
         axes_twin[-1].set_ylabel('Number of votes')
