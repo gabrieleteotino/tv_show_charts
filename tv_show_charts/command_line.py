@@ -64,15 +64,13 @@ def search_shows(text_to_search):
         for show_search in show_search_results:
             print "ID:{} - Title: {}  Year:{}".format(show_search.show_id, show_search.name, show_search.year)
         
-def print_tv_show_stats(show_id):
+def print_tv_show_stats(show_id, save_file=False):
     print show_id
     with Manager(DB_FILE_NAME) as db_manager:
         show = db_manager.load_show_by_id(show_id)
         if show:
-            
             plotter = PlotShow()
-            #plotter.plot_show_simple(show)
-            plotter.plot_show_multi(show)
+            plotter.plot_show_multi(show, save_file)
         else:
             print "TV Show not found. ID:{}".format(show_id)
             
@@ -108,7 +106,8 @@ def parse_args(args):
     parser.add_argument("--search_shows", help="Search for a TV show in the database")
     parser.add_argument("--download", action="store_true", help="Download the ratings file from IMDB servers")
     parser.add_argument("--db_stats", action="store_true", help="Show some statistic from the db")
-    parser.add_argument("--tv_show_stats", help="Show some statistic for the show. Use the id obtained with --search_shows")
+    parser.add_argument("--view", help="Show some statistic for the show. Use the id obtained with --search_shows")
+    parser.add_argument("--save", help="Save a png file with the chart for the selected show. Use the id obtained with --search_shows")
     return parser.parse_args(args)
     
 def main():
@@ -127,8 +126,10 @@ def main():
     elif args.db_stats:
         with Manager(DB_FILE_NAME) as db_manager:
             db_manager.print_table_stats()
-    elif args.tv_show_stats:
-        print_tv_show_stats(args.tv_show_stats)
+    elif args.view:
+        print_tv_show_stats(args.view)
+    elif args.save:
+        print_tv_show_stats(args.save, True)
     else:
         print "Use -h to get help"
         

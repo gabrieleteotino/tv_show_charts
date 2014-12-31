@@ -12,11 +12,12 @@ class PlotShow(object):
     '''
     classdocs
     '''
-    def plot_show_multi(self, show):
+    def plot_show_multi(self, show, save_file):
         """
         Each season color-coded 
         best-fit linear regression line to show the season's trend
         """
+
         plt.style.use("ggplot")
 
         print "plot_show_multi - " + str(show)
@@ -91,5 +92,11 @@ class PlotShow(object):
         axes[0].set_ylabel('Ratings')
         axes_twin[-1].set_ylabel('Number of votes')
 
-        plt.show()
+        if save_file:
+            filename = "{}_{}({}).png".format(show.show_id, show.name, show.year)
+            fig.set_size_inches(15, 10)
+            fig.savefig(filename)
+            print "Saved to " + filename
+        else:
+            plt.show()
         

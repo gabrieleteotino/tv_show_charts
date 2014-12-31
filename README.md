@@ -39,6 +39,10 @@ The output will be
     ID:6946 - Title: Star Trek: The Next Generation  Year:1987  
     ID:6947 - Title: Star Trek: Voyager  Year:1995  
 
-Now let's plot the chart using the id 6947 (Voyager)
+Now you can plot the chart in the interactive window using the id 6947 (Voyager)
 
-    tv_show_charts --tv_show_stats 6947
+    tv_show_charts --view 6947
+
+Or you can save a png file in the local folder
+
+    tv_show_charts --save 6947
