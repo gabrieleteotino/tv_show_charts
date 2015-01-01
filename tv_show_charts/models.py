@@ -7,6 +7,8 @@ from itertools import groupby
 
 class Show(object):
     def __init__(self, show_id, name, year, rating, votes, distribution):
+        self._seasons = None
+
         self.show_id = show_id
         self.name = name
         self.year = int(year)
@@ -15,20 +17,25 @@ class Show(object):
         self.votes = int(votes)
         self.distribution = distribution
         self.episodes = []
+
     def __str__(self):
         return self.name.encode("utf-8") + " (" + str(self.year) + ")"
+
     def __eq__(self, other):
         if other is None: return False
         return self.name == other.name and self.year == other.year
-    def get_seasons(self):
-        seasons= []
-        # Sort the episodes (they should already be sorted, but better safe than sorry)
-        self.episodes.sort(key = lambda x: (x.season, x.number))
-        for key, group in groupby(self.episodes, lambda ep: ep.season):
-            if key != 0:#ignore season zero episodes
-                season = Season(key, list(group))
-                seasons.append(season)
-        return seasons
+
+    @property
+    def seasons(self):
+        if self._seasons is None:
+            self._seasons = []
+            # Sort the episodes (they should already be sorted, but better safe than sorry)
+            self.episodes.sort(key = lambda x: (x.season, x.number))
+            for key, group in groupby(self.episodes, lambda ep: ep.season):
+                if key != 0:#ignore season zero episodes
+                    season = Season(key, list(group))
+                    self._seasons.append(season)
+        return self._seasons
 
 class ShowSearch(object):
     def __init__(self, show_id, name, year):

@@ -38,11 +38,10 @@ class PlotShow(object):
             tableau20[i] = (r / 255., g / 255., b / 255.)
 
         title = "IMDb ratings for " + show.name + " (" + str(show.year) + ")"
-        seasons = show.get_seasons()
-        
+
         # Create the chart
         # squeeze=False enforce the returning of an array even if only one season is present
-        fig, axes = plt.subplots(1, len(seasons), sharex=True, squeeze=False)
+        fig, axes = plt.subplots(1, len(show.seasons), sharex=True, squeeze=False)
 
         # We use only one row of axes, so we only need the first row
         axes = axes[0]
@@ -60,8 +59,8 @@ class PlotShow(object):
         
         max_votes = max(ep.votes for ep in show.episodes)
 
-        for i in range(len(seasons)):
-            season = seasons[i]
+        for i in range(len(show.seasons)):
+            season = show.seasons[i]
             # Prepare data to plot
             x = range(len(season.episodes))
             ratings = [ep.rating for ep in season.episodes]

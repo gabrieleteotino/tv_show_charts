@@ -62,7 +62,8 @@ def search_shows(text_to_search):
     with Manager(DB_FILE_NAME) as db_manager:
         show_search_results = db_manager.search_shows(text_to_search)
         for show_search in show_search_results:
-            print "ID:{} - Title: {}  Year:{}".format(show_search.show_id, show_search.name, show_search.year)
+            #TODO Fix this encode stuff
+            print "ID:{} - Title: {}  Year:{}".format(show_search.show_id, show_search.name.encode("utf-8"), show_search.year)
         
 def print_tv_show_stats(show_id, save_file=False):
     print show_id
