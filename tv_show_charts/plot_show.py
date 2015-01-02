@@ -1,13 +1,15 @@
-'''
+"""
 Created on 29/dic/2014
 
 @author: gabriele
-'''
+"""
+
 import itertools
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots_adjust
 import matplotlib as mpl
 import numpy
+
 
 class PlotShow(object):
     """

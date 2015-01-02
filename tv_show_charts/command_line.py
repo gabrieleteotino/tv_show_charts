@@ -15,6 +15,7 @@ from models import Show
 from models import Episode
 from ratings_parser import RatingsParser
 from tv_show_charts.plot_show import PlotShow
+from tv_show_charts.scatter import Scatter
 
 RESOURCE_FILES_PATH = os.path.join(os.path.expanduser('~'), "tv_shows_chart")
 DB_FILE_NAME = os.path.join(RESOURCE_FILES_PATH, "imdb_shows.sqlite")
@@ -112,7 +113,13 @@ def parse_args(args):
     parser.add_argument("--db_stats", action="store_true", help="Show some statistic from the db")
     parser.add_argument("--view", help="Show some statistic for the show. Use the id obtained with --search_shows")
     parser.add_argument("--save", help="Save a png file with the chart for the selected show. Use the id obtained with --search_shows")
+    parser.add_argument("--scatter", action="store_true", help="Create various scatter plots")
     return parser.parse_args(args)
+
+
+def print_scatter():
+    with Scatter(DB_FILE_NAME) as scatter:
+        scatter.show_episode_ratings_per_year()
 
 
 def main():
@@ -134,6 +141,8 @@ def main():
         print_tv_show_stats(args.view)
     elif args.save:
         print_tv_show_stats(args.save, True)
+    elif args.scatter:
+        print_scatter()
     else:
         print "Use -h to get help"
         
