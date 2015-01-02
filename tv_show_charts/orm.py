@@ -1,11 +1,12 @@
-'''
+"""
 Created on 24/dic/2014
 
 @author: Gabriele Teotino
-'''
+"""
 import sqlite3
 from models import Show, Episode
 from tv_show_charts.models import ShowSearch
+
 
 class Manager():
     _shows_create = '''
@@ -34,8 +35,13 @@ class Manager():
             FOREIGN KEY(show_id) REFERENCES Shows(id)
         )
     '''
-    _episode_insert = 'INSERT INTO Episodes (show_id, title, season, number, rating, votes, distribution) VALUES (?,?,?,?,?,?,?)'
-    _episodes_for_show_select = 'SELECT episode_id, show_id, title, season, number, rating, votes, distribution FROM Episodes WHERE show_id = ? ORDER BY season, number'
+    _episode_insert = '''
+        INSERT INTO Episodes (show_id, title, season, number, rating, votes, distribution) VALUES (?,?,?,?,?,?,?)
+    '''
+    _episodes_for_show_select = '''
+        SELECT episode_id, show_id, title, season, number, rating, votes, distribution
+        FROM Episodes WHERE show_id = ? ORDER BY season, number
+    '''
     
     _shows_search_drop = 'DROP TABLE IF EXISTS ShowsSearch'
     _shows_search_create = 'CREATE VIRTUAL TABLE ShowsSearch USING fts4(show_id, name, year);'
@@ -70,12 +76,14 @@ class Manager():
         for show in shows:
             # if no episode the it is a move and we don't want them
             if len(show.episodes) > 0:
-                self._cursor.execute(self._show_insert, [show.name, show.year, show.rating, show.votes, show.distribution])
+                self._cursor.execute(self._show_insert,
+                                     [show.name, show.year, show.rating, show.votes, show.distribution])
                 show_id = self._cursor.lastrowid
                 for episode in show.episodes:
                     self._cursor.execute(
                         self._episode_insert,
-                        [show_id, episode.title, episode.season, episode.number, episode.rating, episode.votes, episode.distribution]
+                        [show_id, episode.title, episode.season, episode.number,
+                         episode.rating, episode.votes, episode.distribution]
                     )
         self._connection.commit()
         
@@ -102,13 +110,16 @@ class Manager():
     
     def print_table_stats(self):
         """ Print some count statistic from the shows and the episodes table """
-        self._cursor.execute("SELECT count(*) FROM Shows")
+        self._cursor.execute('SELECT count(*) FROM Shows')
         (number_of_shows,) = self._cursor.fetchone()
         
-        self._cursor.execute("SELECT count(*) FROM Episodes")
+        self._cursor.execute('SELECT count(*) FROM Episodes')
         (number_of_episodes,) = self._cursor.fetchone()
         
-        self._cursor.execute("SELECT AVG(episode_count) FROM (SELECT count(show_id) AS episode_count FROM Episodes AS e GROUP BY show_id)")
+        self._cursor.execute('''
+            SELECT AVG(episode_count) FROM (SELECT count(show_id) AS episode_count FROM Episodes AS e GROUP BY show_id)
+        ''')
         (avg_number_of_episodes,) = self._cursor.fetchone()
         
-        print "The database contains {} tv shows, {} episodes with an average of {} episodes for show".format(number_of_shows, number_of_episodes, avg_number_of_episodes)
+        print "The database contains {} tv shows, {} episodes with an average of {} episodes for show".format(
+            number_of_shows, number_of_episodes, avg_number_of_episodes)

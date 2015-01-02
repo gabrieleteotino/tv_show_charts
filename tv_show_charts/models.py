@@ -1,9 +1,10 @@
-'''
+"""
 Created on 24/dic/2014
 
 @author: Gabriele Teotino
-'''
+"""
 from itertools import groupby
+
 
 class Show(object):
     def __init__(self, show_id, name, year, rating, votes, distribution):
@@ -19,7 +20,10 @@ class Show(object):
         self.episodes = []
 
     def __str__(self):
-        return self.name.encode("utf-8") + " (" + str(self.year) + ")"
+        if self.show_id == 0:
+            return "Title:{}  Year:{}".format(self.name.encode("utf-8"), str(self.year))
+        else:
+            return "ID:{} - Title:{}  Year:{}".format(self.show_id, self.name.encode("utf-8"), self.year)
 
     def __eq__(self, other):
         if other is None: return False
@@ -37,12 +41,17 @@ class Show(object):
                     self._seasons.append(season)
         return self._seasons
 
+
 class ShowSearch(object):
     def __init__(self, show_id, name, year):
         self.show_id = show_id
         self.name = name
         self.year = year
-        
+
+    def __str__(self):
+        return "ID:{} - Title:{}  Year:{}".format(self.show_id, self.name.encode("utf-8"), self.year)
+
+
 class Episode(object):
     def __init__(self, episode_id, show_id, title, season, number, rating, votes, distribution):
         try:
@@ -59,12 +68,13 @@ class Episode(object):
             print "Unexpected error"
             print (title, season, number, rating, votes, distribution)
             raise
+
     def __str__(self):
-        return self.title.encode("utf-8") + " #" + str(self.season) + "." + str(self.number) + " " + \
+            return self.title.encode("utf-8") + " #" + str(self.season) + "." + str(self.number) + " " + \
             str(self.rating) + " " + str(self.votes) + " " + self.distribution.encode("utf-8")
+
 
 class Season(object):
     def __init__(self, number, episodes):
         self.number = number
         self.episodes = episodes
-        

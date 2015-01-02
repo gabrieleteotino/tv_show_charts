@@ -10,18 +10,19 @@ import matplotlib as mpl
 import numpy
 
 class PlotShow(object):
-    '''
+    """
     classdocs
-    '''
-    def plot_show_multi(self, show, save_file):
+    """
+    @staticmethod
+    def plot_show_all_season(show, save_file):
         """
         A chart with each season color-coded
         Plot "Ratings", "Number of votes" and a best-fit linear regression line to show the season's trend
         """
 
-        print "plot_show_multi - " + str(show)
+        print ("plot_show_all_season - " + str(show))
 
-        plt.style.use("ggplot")
+        plt.style.use('ggplot')
         # Set the plot background a bit lighter
         mpl.rcParams['axes.facecolor'] = 'F0F0F0'
 
@@ -66,13 +67,12 @@ class PlotShow(object):
             ratings = [ep.rating for ep in season.episodes]
             ratings_trend = calculate_trend_line_poly(x, ratings)
             votes = [ep.votes for ep in season.episodes]
-            #votes_trend = calculate_trend_line_poly(x, votes)
 
             label = "Season {}".format(season.number)
 
             # Plot ratings
             axis = axes[i]
-            color = tableau20[i%20]
+            color = tableau20[i % 20]
             axis.plot(x, ratings, "-8", color=color, linewidth=2.0)
 
             # Plot the trend line
@@ -89,8 +89,6 @@ class PlotShow(object):
             # Plot votes
             axis_twin.plot(x, votes, "--", color=color)
             axis_twin.set_ylim(0, max_votes)
-            # Plot the trend line
-            #axis_twin.plot(x, votes_trend(x), ":")
 
             # Only after the last plot we can set the xbounds
             axis.set_xbound(-1)
@@ -118,4 +116,3 @@ class PlotShow(object):
             print "Saved to " + filename
         else:
             plt.show()
-        
