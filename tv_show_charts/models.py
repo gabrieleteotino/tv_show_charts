@@ -65,8 +65,8 @@ class Episode(object):
             self.votes = int(votes)
             self.distribution = distribution
         except :
-            print "Unexpected error"
-            print (title, season, number, rating, votes, distribution)
+            print("Unexpected error")
+            print(title, season, number, rating, votes, distribution)
             raise
 
     def __str__(self):

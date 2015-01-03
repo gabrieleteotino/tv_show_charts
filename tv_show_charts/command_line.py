@@ -10,12 +10,14 @@ import argparse
 import sys
 import ftplib
 import gzip
-from orm import Manager
-from models import Show
-from models import Episode
-from ratings_parser import RatingsParser
+
+from tv_show_charts.orm import Manager
+from tv_show_charts.models import Show
+from tv_show_charts.models import Episode
+from tv_show_charts.ratings_parser import RatingsParser
 from tv_show_charts.plot_show import PlotShow
 from tv_show_charts.scatter import Scatter
+
 
 RESOURCE_FILES_PATH = os.path.join(os.path.expanduser('~'), "tv_shows_chart")
 DB_FILE_NAME = os.path.join(RESOURCE_FILES_PATH, "imdb_shows.sqlite")
@@ -46,7 +48,7 @@ def populate_db():
                     if len(shows) >= 10000:
                         db_manager.insert_show_and_episodes(shows)
                         inserted_shows += len(shows)
-                        print ("{} shows analyzed ...".format(inserted_shows))
+                        print ("{} lines loaded...".format(inserted_shows))
                         shows = []
                     show = parsed
                     shows.append(show)
@@ -54,9 +56,9 @@ def populate_db():
                     show.episodes.append(parsed)
         # After reaching the EOF we save the remaining shows
         db_manager.insert_show_and_episodes(shows)
-        print "Insert complete, indexing data"
+        print("Insert complete, indexing data")
         db_manager.reindex_full_text_search()
-        print "Populate complete"
+        print("Populate complete")
         db_manager.print_table_stats()
 
 
@@ -79,25 +81,25 @@ def print_tv_show_stats(show_id, save_file=False):
 
 
 def download_ratings():
-    print "Connecting to ftp server"
+    print("Connecting to ftp server")
     ftp = ftplib.FTP("ftp.fu-berlin.de")
     ftp.login()
-    print "Connected"
+    print("Connected")
     ftp.cwd("/pub/misc/movies/database/")
-    print "Downloading file..."
+    print("Downloading file...")
     ratings_file_gz = open(RATINGS_FILE_NAME_GZ, "wb")
     ftp.retrbinary("RETR ratings.list.gz", ratings_file_gz.write)
     ratings_file_gz.close()
     ftp.close()
-    print "Download complete"
-    print "Extracting file..."
+    print("Download complete")
+    print("Extracting file...")
     
     ratings_file_gz = gzip.open(RATINGS_FILE_NAME_GZ, 'rb')
     ratings_file = open(RATINGS_FILE_NAME, 'wb')
     ratings_file.write( ratings_file_gz.read() )
     ratings_file_gz.close()
     ratings_file.close()
-    print "Extraction complete, have fun!"
+    print("Extraction complete, have fun!")
 
 
 def parse_args(args):
@@ -144,7 +146,7 @@ def main():
     elif args.scatter:
         print_scatter()
     else:
-        print "Use -h to get help"
+        print("Use -h to get help")
         
 if __name__ == '__main__':
     main()

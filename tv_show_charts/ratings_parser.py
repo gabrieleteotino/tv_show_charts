@@ -4,8 +4,8 @@ Created on 27/dic/2014
 @author: Gabriele Teotino
 """
 import re
-from models import Show
-from models import Episode
+from tv_show_charts.models import Show
+from tv_show_charts.models import Episode
 
 
 class RatingsParser(object):
@@ -68,7 +68,7 @@ class RatingsParser(object):
                 results['season'] = 1
                 results['number'] = dot_split_result[0]
         else:
-            print "parse_episode unexpected split results, original text is: " + text
+            print("parse_episode unexpected split results, original text is: " + text)
         
         return results
     

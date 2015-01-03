@@ -4,8 +4,7 @@ Created on 24/dic/2014
 @author: Gabriele Teotino
 """
 import sqlite3
-from models import Show, Episode
-from tv_show_charts.models import ShowSearch
+from tv_show_charts.models import *
 
 
 class Manager():
@@ -121,5 +120,5 @@ class Manager():
         ''')
         (avg_number_of_episodes,) = self._cursor.fetchone()
         
-        print "The database contains {} tv shows, {} episodes with an average of {} episodes for show".format(
-            number_of_shows, number_of_episodes, avg_number_of_episodes)
+        print("The database contains {} tv shows, {} episodes with an average of {} episodes for show".format(
+            number_of_shows, number_of_episodes, avg_number_of_episodes))

@@ -115,6 +115,6 @@ class PlotShow(object):
             filename = "{}_{}({}).png".format(show.show_id, show.name, show.year)
             fig.set_size_inches(15, 10)
             fig.savefig(filename)
-            print "Saved to " + filename
+            print("Saved to " + filename)
         else:
             plt.show()
