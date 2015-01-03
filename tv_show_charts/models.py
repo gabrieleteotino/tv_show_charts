@@ -29,6 +29,12 @@ class Show(object):
         if other is None: return False
         return self.name == other.name and self.year == other.year
 
+    def get_filename(self):
+        filename = "{}_{}_{}".format(self.show_id, self.name, self.year)
+        # Whitelist the filename
+        filename = "".join(x if x.isalnum() else "_" for x in filename)
+        return filename
+
     @property
     def seasons(self):
         if self._seasons is None:

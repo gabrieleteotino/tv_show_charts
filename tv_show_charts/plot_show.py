@@ -112,7 +112,7 @@ class PlotShow(object):
         axes_twin[-1].set_ylabel('Number of votes')
 
         if save_file:
-            filename = "{}_{}({}).png".format(show.show_id, show.name, show.year)
+            filename = show.get_filename() + ".png"
             fig.set_size_inches(15, 10)
             fig.savefig(filename)
             print("Saved to " + filename)
