@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots_adjust
 import matplotlib as mpl
 import numpy
-
+import matplotlib.lines as mlines
 
 class PlotShow(object):
     """
@@ -97,7 +97,8 @@ class PlotShow(object):
 
         # Remove the Grid for the x axis
         for axis in axes:
-            axis.get_xaxis().set_visible(False)
+            axis.set_xticklabels([])
+            axis.set_xticks([])
 
         # Clear the "Ratings" axis for all except the first one
         for axis in axes[1:]:
@@ -109,7 +110,15 @@ class PlotShow(object):
         axes_twin[-1].get_yaxis().grid(False)
 
         axes[0].set_ylabel('Ratings')
+        axes[0].set_xlabel('Episodes')
         axes_twin[-1].set_ylabel('Number of votes')
+
+        # Create custom lines for the legend
+        legend_ratings_line = mlines.Line2D([], [], color='gray', marker='8', linewidth=2.0)
+        legend_ratings_trends_line = mlines.Line2D([], [], color='gray', linewidth=1.0)
+        legend_votes_line = mlines.Line2D([], [], color='gray', linestyle=":", linewidth=1.0)
+        fig.legend(handles=[legend_ratings_line, legend_ratings_trends_line, legend_votes_line],
+                   labels=['Ratings', 'Rating trend', 'Number of votes'])
 
         if save_file:
             filename = show.get_filename() + ".png"
