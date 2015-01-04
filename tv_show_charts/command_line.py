@@ -1,8 +1,4 @@
-"""
-Created on 23/dic/2014
-
-@author: Gabriele Teotino
-"""
+#!/usr/bin/env python
 
 import os.path
 import codecs
@@ -18,6 +14,8 @@ from tv_show_charts.ratings_parser import RatingsParser
 from tv_show_charts.plot_show import PlotShow
 from tv_show_charts.scatter import Scatter
 
+__author__ = "Gabriele Teotino"
+__license__ = "MIT"
 
 RESOURCE_FILES_PATH = os.path.join(os.path.expanduser('~'), "tv_shows_chart")
 DB_FILE_NAME = os.path.join(RESOURCE_FILES_PATH, "imdb_shows.sqlite")

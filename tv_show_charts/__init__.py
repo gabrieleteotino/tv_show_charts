@@ -1,5 +1,4 @@
-"""
-Created on 24/dic/2014
-
-@author: Gabriele Teotino
-"""
+__author__ = "Gabriele Teotino"
+__license__ = "MIT"
+__version__ = 0.1
+__status__ = "Development"

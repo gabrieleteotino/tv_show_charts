@@ -1,8 +1,7 @@
-"""
-Created on 24/dic/2014
+#!/usr/bin/env python
 
-@author: Gabriele Teotino
-"""
+__author__ = "Gabriele Teotino"
+__license__ = "MIT"
 
 from setuptools import setup
 

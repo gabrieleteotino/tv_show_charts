@@ -1,12 +1,7 @@
-"""
-Created on 27/dic/2014
-
-@author: Gabriele Teotino
-"""
 import re
-from tv_show_charts.models import Show
-from tv_show_charts.models import Episode
 
+__author__ = "Gabriele Teotino"
+__license__ = "MIT"
 
 class RatingsParser(object):
     """

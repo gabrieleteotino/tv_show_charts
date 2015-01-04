@@ -1,10 +1,13 @@
 """
 Created on 24/dic/2014
 
-@author: Gabriele Teotino
 """
+
 import sqlite3
 from tv_show_charts.models import *
+
+__author__ = "Gabriele Teotino"
+__license__ = "MIT"
 
 
 class Manager():

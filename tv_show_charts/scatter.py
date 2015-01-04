@@ -1,10 +1,8 @@
-"""
-Created on 02/jan/2015
-"""
 import sqlite3
 import matplotlib.pyplot as plt
 
-__author__ = 'Gabriele Teotino'
+__author__ = "Gabriele Teotino"
+__license__ = "MIT"
 
 class Scatter(object):
     _select_show_vs_episode_votes = """

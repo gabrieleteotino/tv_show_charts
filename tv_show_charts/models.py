@@ -1,10 +1,7 @@
-"""
-Created on 24/dic/2014
-
-@author: Gabriele Teotino
-"""
 from itertools import groupby
 
+__author__ = "Gabriele Teotino"
+__license__ = "MIT"
 
 class Show(object):
     def __init__(self, show_id, name, year, rating, votes, distribution):
