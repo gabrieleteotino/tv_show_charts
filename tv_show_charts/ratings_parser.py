@@ -21,87 +21,77 @@ class RatingsParser(object):
         ..00.02301      31   7.4  "Doctor Who: Dreamland" (2009) {(#1.1)}
     """
     _re_valid_show = re.compile(r'\s*((\d|\.){10})\s*(\d*)\s*(\d*\.\d*)\s*"(.*)"\s\((\d\d\d\d)\)')
-    _re_valid_episode = re.compile(r'\s*((\d|\.){10})\s*(\d*)\s*(\d*\.\d*)\s*"(.*)"\s\((\d\d\d\d)\)\s\{(.*)\}')
+    _re_valid_episode = re.compile(r'.*?\{(.*)\}')
     _re_episode_season_and_number = re.compile(r'\(#(\d+.*\d*)\)')
 
-    def parse_episode(self, text):
-        """
-        return a dictionary with title, season and number
-        
-        Episode text can be:
-        - title season and number 
-            re.split('\(#(\d+.*\d*)\)', "episode_title(#2.3)")
-            ['episode_title', '2.3', '']
-        
-        - title and number, without season
-            re.split('\(#(\d+.*\d*)\)', "episode_title(#3)")
-            ['episode_title', '3', '']
-
-        - title only
-            re.split('\(#(\d+.*\d*)\)', "episode_title")
-            ['episode_title']
-            
-        - no title, only season and number
-            re.split('\(#(\d+.*\d*)\)', "(#2.3)")
-            ['', '2.3', '']
-
-        - no title, no season, only number
-            re.split('\(#(\d+.*\d*)\)', "(#3)")
-            ['', '3', '']
-
-        """
-        results = {}
-        split_results = self._re_episode_season_and_number.split(text)
-        if len(split_results) == 1:
-            # We have only the title
-            results['title'] = split_results[0]
-            results['season'] = 0
-            results['number'] = 0
-        elif len(split_results) == 3:
-            results["title"] = split_results[0]
-            
-            dot_split_result = split_results[1].split('.')
-            if len(dot_split_result) == 2:
-                results['season'] = dot_split_result[0]
-                results['number'] = dot_split_result[1]
-            else:
-                results['season'] = 1
-                results['number'] = dot_split_result[0]
-        else:
-            print("parse_episode unexpected split results, original text is: " + text)
-        
-        return results
-    
     def parse_line(self, text):
         """
-        Return None if the line is not a valid match, Show or Episode (without id) if the match is valid
+        Returns a dictionary containing the parsing results
+        if text is not valid
+            return {}
+        if text is a show
+            return {'type': "Show", ...}
+        if text is an Episode
+            return {'type': "Episode", ...}
         """
-        result = None
-        
+        result = {}
+
+        # Using _re_valid_show we will match both the Show and Episode
         show_matches = self._re_valid_show.match(text)
-        episode_matches = self._re_valid_episode.match(text)
-        
-        if not episode_matches is None:
-            distribution = episode_matches.group(1)
-            votes = int(episode_matches.group(3))
-            ratings = float(episode_matches.group(4))
-            
-            episode_details = self.parse_episode(episode_matches.group(7))
-            
-            # The id  will be created by the db
-            result = Episode(0, 0,
-                            episode_details['title'], episode_details['season'], episode_details['number'],
-                            ratings, votes, distribution)
-        
-        elif not show_matches is None:
+        if show_matches:
             distribution = show_matches.group(1)
             votes = int(show_matches.group(3))
             ratings = float(show_matches.group(4))
-            
-            show_name = show_matches.group(5)
+
+            show_title = show_matches.group(5)
             show_year = show_matches.group(6)
-            
-            # The id  will be created by the db
-            result = Show(0, show_name, show_year, ratings, votes, distribution)
-        
+
+            result = {
+                'type': "Show",
+                'show_title': show_title,
+                'year': int(show_year),
+                'ratings': float(ratings),
+                'votes': int(votes),
+                'distribution': distribution
+            }
+        else:
+            # Nothing more to do here
+            return {}
+
+        # If _re_valid_episode is a match we will add episode information
+        episode_matches = self._re_valid_episode.match(text)
+        if episode_matches:
+            # Change the type from Show to Episode
+            result['type'] = "Episode"
+
+            #episode_details = self.parse_episode(episode_matches.group(1))
+            """
+            The string containing episode details is not nicely formatted by IMDb
+            It can be:
+            "episode_title"
+            "episode_title(#2.3)"
+            "episode_title(#3)"
+            "(#2.3)"
+            "(#3)"
+            """
+
+            split_results = self._re_episode_season_and_number.split(episode_matches.group(1))
+            if len(split_results) == 1:
+                # We have only the title
+                result['episode_title'] = split_results[0]
+                result['season'] = 0
+                result['number'] = 0
+            elif len(split_results) == 3:
+                result["episode_title"] = split_results[0]
+
+                dot_split_result = split_results[1].split('.')
+                if len(dot_split_result) == 2:
+                    result['season'] = int(dot_split_result[0])
+                    result['number'] = int(dot_split_result[1])
+                else:
+                    result['season'] = 1
+                    result['number'] = int(dot_split_result[0])
+            else:
+                print("parse_episode unexpected split results, original text is: " + text)
+
         return result

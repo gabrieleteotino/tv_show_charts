@@ -43,17 +43,34 @@ def populate_db():
             shows = []
             for line in ratings_file:
                 parsed = parser.parse_line(line)
-                if type(parsed) is Show:
-                    # Check if we have too many show in the array
-                    if len(shows) >= 10000:
-                        db_manager.insert_show_and_episodes(shows)
-                        inserted_shows += len(shows)
-                        print ("{} lines loaded...".format(inserted_shows))
-                        shows = []
-                    show = parsed
-                    shows.append(show)
-                if type(parsed) is Episode:
-                    show.episodes.append(parsed)
+                if 'type' in parsed:
+                    if parsed['type'] == "Show":
+                        # Check if we have too many show in the array
+                        if len(shows) >= 10000:
+                            db_manager.insert_show_and_episodes(shows)
+                            inserted_shows += len(shows)
+                            print ("{} lines loaded...".format(inserted_shows))
+                            shows = []
+                        show = Show(0,
+                                    parsed['show_title'],
+                                    parsed['year'],
+                                    parsed['ratings'],
+                                    parsed['votes'],
+                                    parsed['distribution'])
+                        shows.append(show)
+                    if parsed['type'] == "Episode":
+                        #Check if the Episode is part of the show
+                        if parsed['show_title'] == show.name and parsed['year'] == show.year:
+                            episode = Episode(0, 0,
+                                              parsed['episode_title'],
+                                              parsed['season'],
+                                              parsed['number'],
+                                              parsed['ratings'],
+                                              parsed['votes'],
+                                              parsed['distribution'])
+                            show.episodes.append(episode)
+                        else:
+                            print("Detected orphan episode: " + line + "\n" + str(parsed))
         # After reaching the EOF we save the remaining shows
         db_manager.insert_show_and_episodes(shows)
         print("Insert complete, indexing data")
